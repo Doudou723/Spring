@@ -1,0 +1,52 @@
+在IDEA或者eclipse编译器配置好Maven的项目以后
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+①首先找到pom.xml我们来配置项目的坐标依赖 （pom.xml相当于配置需要的库）
+eg:<!-- Spring核心依赖 -->
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-core</artifactId>
+        <version>${org.springframework.version}</version>
+    </dependency>
+为什么不把依赖一次性都导进去？
+依赖是一个library，需要空间来储存，如果把所有依赖都导进去，会占很多内存，所以不建议都导进去，建议用什么导什么。
+------------------------------------------------------------------------------------------------------------------------------------------------------
+②eclipse建立一个资源文件夹，在文件夹里建立xx.xml，来配置bean依赖/如果是IDEA的话，下载插件之后新建xml文件，以下的内容自动生成，不需要添加
+
+首先添加
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+.
+.
+.
+</beans>
+之后的话，在上面beans里配置对象  id设置bean的唯一标识，class设置对应类的全类名
+
+eg；（例子中的<property.....>是setter依赖注入，也有构造方法依赖注入<constructor arg....>  比较推荐setter注入）
+<bean id="teacher1" class="com.utouch.Teacher">
+        <property name="sex" value="男"></property>
+        <property name="name" value="王老师"></property>
+        <property name="id" value="1"></property>
+        <property name="course" value="Java"></property>
+    </bean>
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+③在测试类建立一个容器、之后能把bean对象放进去
+
+public class TeacherTest {
+    public static void main(String[] args) {
+//加载类路径下的配置文件
+        ApplicationContext applicationContext=new ClassPathXmlApplicationContext("applicationContext.xml");
+//获取Bean对象
+        Teacher teacher1= applicationContext.getBean("teacher1",Teacher.class);
+        System.out.println(teacher1);
+
+    }
+}
+****************************************************************************************************************************************************
+刚开始的时候是用xml，之后会有注解配置来替代XML
+注解注入更简单方便，但xml是基础，原理也需要学
+
+
